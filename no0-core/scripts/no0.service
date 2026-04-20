@@ -1,0 +1,28 @@
+[Unit]
+Description=No.0 Skill - OpenClaw Cognitive File Guardian
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=10
+User=%i
+WorkingDirectory=/home/%i/.openclaw/workspace/skills/no0-skill
+ExecStart=/usr/bin/python3 /home/%i/.openclaw/workspace/skills/no0-skill/scripts/skill_launcher.py start
+ExecStop=/usr/bin/python3 /home/%i/.openclaw/workspace/skills/no0-skill/scripts/skill_launcher.py stop
+Environment=PYTHONUNBUFFERED=1
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=no0-skill
+
+# Security
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/home/%i/.openclaw/workspace/skills/no0-skill
+ReadOnlyPaths=/home/%i/.openclaw/workspace
+
+[Install]
+WantedBy=multi-user.target

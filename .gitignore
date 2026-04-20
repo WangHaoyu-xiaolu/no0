@@ -1,0 +1,50 @@
+# --- DLC scratch / demos (excluded per repo owner) ---
+no0-dlc-internal-control/demo_*.py
+no0-dlc-internal-control/quick_test.py
+no0-dlc-internal-control/minimal_test.py
+no0-dlc-internal-control/direct_test.py
+no0-dlc-internal-control/test_http_fix.py
+no0-dlc-internal-control/debug_http_auth.py
+# stray scratch file at DLC root
+no0-dlc-internal-control/1
+
+# --- Python artifacts ---
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# --- Editor / OS ---
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Runtime state (if user runs ./no0 start from repo root) ---
+no0-core/monitor_launcher.log
+no0-core/reconcile_launcher.log
+no0-core/tamper_launcher.log
+no0-core/heartbeat_log.txt
+no0-core/tamper_events.jsonl
+no0-core/change_log*.json
+no0-core/change_log*.md
+no0-core/no0_reconcile_cron.json
+no0-core/no0_processes.json
+no0-core/.no0_reported_inconsistent
+no0-core/.no0_last_quiet_check
+no0-core/cognitive_file_backups/
+# Runtime baselines that may land at no0-core/ root when --output-dir defaults
+no0-core/*.md.v*
+no0-core/*.md.v*.meta
+
+# --- Scratch utilities at Core root ---
+no0-core/check_diff.py
+no0-core/file_change_report.md
+
+# --- Virtualenvs ---
+.venv/
+venv/
+env/

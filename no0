@@ -1,0 +1,85 @@
+#!/usr/bin/env sh
+set -eu
+
+SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+CORE_DIR="$SCRIPT_DIR/no0-core"
+DLC_DIR="$SCRIPT_DIR/no0-dlc-internal-control"
+
+if [ "${1:-}" = "/no0" ]; then
+  shift
+fi
+
+CORE_COMMANDS=" status start stop rollback versions diff log clear clean test report "
+DLC_COMMANDS=" classify audit auth init decide "
+
+cmd="${1:-}"
+
+if [ -n "${NO0_PYTHON:-}" ]; then
+  PYTHON_BIN="${NO0_PYTHON}"
+elif command -v python3 >/dev/null 2>&1; then
+  PYTHON_BIN="python3"
+elif command -v python >/dev/null 2>&1; then
+  PYTHON_BIN="python"
+else
+  echo "[no0] Python interpreter not found (python3/python)." >&2
+  exit 127
+fi
+
+print_help() {
+  cat <<'EOF'
+No.0 — AI Agent Safety Guardian
+
+Core commands (always available):
+  status                 Check guardian status
+  start / stop           Manage the guardian daemon
+  rollback <f> <v>       Rollback a file to a version
+  versions <f>           List versions of a file
+  diff <f> <v>           Show diff against a version
+  log [--last N]         Show recent change events
+  clear                  Clear logs, training output, backups
+  report [--json|--reset]  Hourly delta report (silent if nothing new)
+  test                   Run local self-check
+
+DLC commands (require No.0-DLC-Internal Control):
+  classify               Data classification operations
+  audit                  View audit log
+  auth                   Authorization management
+  decide <f> <action>    Resolve a pending L5 decision (rollback v<n> | keep | status)
+
+For details: ./no0 <command> --help
+EOF
+}
+
+if [ -z "$cmd" ] || [ "$cmd" = "help" ] || [ "$cmd" = "--help" ] || [ "$cmd" = "-h" ]; then
+  print_help
+  exit 0
+fi
+
+if echo "$CORE_COMMANDS" | grep -q " $cmd "; then
+  if [ "$cmd" = "start" ] && [ -n "${NO0_RECONCILE_INTERVAL:-}" ]; then
+    has_reconcile_interval=0
+    for arg in "$@"; do
+      if [ "$arg" = "--reconcile-interval" ]; then
+        has_reconcile_interval=1
+        break
+      fi
+    done
+    if [ "$has_reconcile_interval" -eq 0 ]; then
+      set -- "$@" "--reconcile-interval" "$NO0_RECONCILE_INTERVAL"
+    fi
+  fi
+  exec "$PYTHON_BIN" "$CORE_DIR/scripts/skill_launcher.py" "$@"
+fi
+
+if echo "$DLC_COMMANDS" | grep -q " $cmd "; then
+  if [ ! -d "$DLC_DIR" ]; then
+    echo "[no0] '$cmd' requires No.0-DLC-Internal Control, which is not installed." >&2
+    echo "       Install: ./install-dlc.sh" >&2
+    exit 2
+  fi
+  exec "$PYTHON_BIN" "$DLC_DIR/cli/dlc_cli.py" "$@"
+fi
+
+echo "[no0] Unknown command: $cmd" >&2
+echo "       Run './no0 help' for usage." >&2
+exit 1
