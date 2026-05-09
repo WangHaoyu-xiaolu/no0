@@ -1,6 +1,6 @@
 ---
 name: no0-skill
-description:Initial release: cognitive file monitoring with L1-L5 alerting.
+description: Initial release cognitive file monitoring with L1-L5 alerting.
 ---
 
 # No.0 — AI Agent Safety Guardian
