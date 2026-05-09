@@ -1,3 +1,5 @@
+name: N.o-skill
+description: Initial release: cognitive file monitoring with L1-L5 alerting
 # No.0 — AI Agent Safety Guardian
 
 > Two threats to your AI agent. Two layers of defense. One unified CLI.
