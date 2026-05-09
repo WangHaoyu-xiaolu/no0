@@ -1,5 +1,5 @@
 ---
-name: No.0-skill
+name: no 0-skill
 description:Initial release: cognitive file monitoring with L1-L5 alerting.
 ---
 
